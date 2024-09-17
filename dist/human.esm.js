@@ -32825,7 +32825,8 @@ var config = {
     enabled: true
   },
   forehead: {
-    enabled: true
+    enabled: true,
+    modelPath: "forehead.json"
   },
   face: {
     enabled: true,
@@ -46393,7 +46394,7 @@ var preprocess = async (tensor, modelWidth, modelHeight, faceBox) => {
   const imageBitmap = await createImageBitmap(imageData);
   const [frame, input] = De(() => {
     const img = XT.fromPixels(imageBitmap);
-    console.log("Initial tensor shape:", img.shape, frame);
+    console.log("Initial tensor shape:", img.shape);
     let croppedImg;
     if (faceBox) {
       console.log("Attempting to crop with faceBox:", faceBox);

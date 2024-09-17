@@ -203,7 +203,7 @@ const preprocess = async (
   // Create ImageBitmap from the frame
   const [frame, input] = tf.tidy(() => {
     const img = tf.browser.fromPixels(imageBitmap);
-    console.log('Initial tensor shape:', img.shape, frame);
+    console.log('Initial tensor shape:', img.shape);
 
     let croppedImg: tf.Tensor3D;
     if (faceBox) {

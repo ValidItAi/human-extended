@@ -389,6 +389,7 @@ const config: Config = {
   },
   forehead: {
     enabled: true,
+    modelPath: 'forehead.json',
   },
   face: {
     enabled: true,

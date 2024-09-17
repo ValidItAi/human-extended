@@ -389,9 +389,6 @@ const config: Config = {
   },
   forehead: {
     enabled: true,
-    skipFrames: 99, // TODO: ?
-    skipTime: 1500, // TODO: ?
-    modelPath: 'yolov8n_web_model/model.json',
   },
   face: {
     enabled: true,

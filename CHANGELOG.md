@@ -11,6 +11,7 @@
   
 ### **HEAD -> initialBuild** 2024/09/17 anaelshomrai@gmail.com
 
+- manually add types
 - build
 
 ### **origin/initialModalIntegration** 2024/09/17 anaelshomrai@gmail.com

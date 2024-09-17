@@ -34232,6 +34232,7 @@ __export(models_exports, {
   emotion: () => emotion,
   facemesh: () => facemesh,
   faceres: () => faceres,
+  forehead: () => forehead,
   "handlandmark-lite": () => handlandmark_lite,
   handtrack: () => handtrack,
   iris: () => iris,
@@ -34245,6 +34246,7 @@ var centernet = 4030290;
 var emotion = 820516;
 var facemesh = 1477958;
 var faceres = 6978814;
+var forehead = 12193544;
 var handlandmark_lite = 2023432;
 var handtrack = 2964837;
 var iris = 2599092;
@@ -34258,6 +34260,7 @@ var models_default = {
   emotion,
   facemesh,
   faceres,
+  forehead,
   "handlandmark-lite": handlandmark_lite,
   handtrack,
   iris,
@@ -34654,7 +34657,7 @@ __export(draw_exports, {
   body: () => body,
   canvas: () => canvas2,
   face: () => face,
-  forehead: () => forehead,
+  forehead: () => forehead2,
   gesture: () => gesture,
   hand: () => hand,
   init: () => init2,
@@ -38960,7 +38963,7 @@ __publicField(Colors, "hexToRgba", (hex, alpha2) => {
 });
 var labelsForehead = ["ForeheadRect", "Forehead"];
 var localOptions2;
-function forehead(inCanvas2, result, drawOptions) {
+function forehead2(inCanvas2, result, drawOptions) {
   localOptions2 = mergeDeep(options2, drawOptions);
   if (!result || !inCanvas2) return;
   console.log("With result?", result);
@@ -39062,7 +39065,7 @@ async function all(inCanvas2, result, drawOptions) {
   if (!(result == null ? void 0 : result.performance) || !inCanvas2) return null;
   const timeStamp = now();
   const localOptions3 = mergeDeep(options2, drawOptions);
-  const rest = forehead(inCanvas2, result.forehead, localOptions3);
+  const rest = forehead2(inCanvas2, result.forehead, localOptions3);
   console.log("rest", rest);
   const promise = Promise.all([
     face(inCanvas2, result.face, localOptions3),

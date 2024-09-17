@@ -92,7 +92,7 @@ const ui = {
   modelsPreload: false, // preload human models on startup
   modelsWarmup: false, // warmup human models on startup
   buffered: true, // should output be buffered between frames
-  interpolated: true, // should output be interpolated for smoothness between frames
+  interpolated: false, // should output be interpolated for smoothness between frames
   iconSize: '48px', // ui icon sizes
   autoPlay: false, // start webcam & detection on load
 
@@ -246,6 +246,7 @@ let lastDraw = 0;
 async function drawResults(input) {
   // await delay(25);
   const result = lastDetectedResult;
+  console.log("last result",result.forehead);
   const canvas = document.getElementById('canvas');
 
   // update draw fps data
@@ -278,9 +279,9 @@ async function drawResults(input) {
   let interpolated;
   if (ui.interpolated) interpolated = human.next(result);
   else interpolated = result;
+  console.log("interpolated ",interpolated.forehead);
   human.draw.all(canvas, interpolated, drawOptions);
-  // human.draw.forehead(canvas, interpolated, drawOptions);
-
+  //human.draw.forehead(canvas, result.forehead);
   // show tree with results
   if (ui.results) {
     const div = document.getElementById('results');
@@ -513,6 +514,7 @@ function runHumanDetect(input, canvas, timestamp) {
   } else {
     human.detect(input, userConfig)
       .then((result) => {
+        console.log("forehead result",result.forehead)
         status();
         if (result.performance && result.performance.total) ui.detectFPS.push(1000 / result.performance.total);
         if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();

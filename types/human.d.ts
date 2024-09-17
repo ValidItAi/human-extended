@@ -174,6 +174,8 @@ export declare interface Config {
     object: Partial<ObjectConfig>;
     /** Segmentation config {@link SegmentationConfig} */
     segmentation: Partial<SegmentationConfig>;
+    /** Forehead config {@link ForeheadDetectorConfig} */
+    forehead: Partial<ForeheadDetectorConfig>;
 }
 
 /** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L262) */
@@ -444,6 +446,13 @@ export declare interface FaceMeshConfig extends GenericConfig {
     /** Keep detected faces that cannot be verified using facemesh */
     keepInvalid: boolean;
 }
+
+export declare interface ForeheadResult { // eslint-disable-line @typescript-eslint/no-explicit-any
+    numOfDetections?: number;
+    box?: Box; /* eslint-disable @typescript-eslint/no-explicit-any */
+    score?: any; /* eslint-disable @typescript-eslint/no-explicit-any */
+    class?: any; /* eslint-disable @typescript-eslint/no-explicit-any */
+  }
 
 /** Face results
  * - Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
@@ -1043,6 +1052,8 @@ export { Rank }
  * Contains all possible detection results
  */
 export declare interface Result {
+    /** {@link ForeheadResult}: detection & analysis results */
+    forehead: ForeheadResult;
     /** {@link FaceResult}: detection & analysis results */
     face: FaceResult[];
     /** {@link BodyResult}: detection & analysis results */
@@ -1081,6 +1092,11 @@ export declare interface SegmentationConfig extends GenericConfig {
     /** possible rvm segmentation mode */
     mode: SegmentationEnum;
 }
+
+export declare interface ForeheadDetectorConfig extends GenericConfig {
+    isForehead: boolean;
+  }
+  
 
 /** Possible segmentation model behavior */
 export declare type SegmentationEnum = 'default' | 'alpha' | 'foreground' | 'state';

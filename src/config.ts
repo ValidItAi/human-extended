@@ -89,6 +89,11 @@ export interface FaceGearConfig extends GenericConfig {
   minConfidence: number,
 }
 
+// TODO: To be defined with Sagi
+export interface ForeheadDetectorConfig extends GenericConfig {
+  isForehead: boolean;
+}
+
 /** Configures all face-specific options: face detection, mesh analysis, age, gender, emotion detection and face description */
 export interface FaceConfig extends GenericConfig {
   detector: Partial<FaceDetectorConfig>,
@@ -336,6 +341,9 @@ export interface Config {
 
   /** Segmentation config {@link SegmentationConfig} */
   segmentation: Partial<SegmentationConfig>,
+
+  /** Forehead config {@link ForeheadDetectorConfig} */
+  forehead: Partial<ForeheadDetectorConfig>;
 }
 
 /** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L262) */
@@ -378,6 +386,12 @@ const config: Config = {
   },
   gesture: {
     enabled: true,
+  },
+  forehead: {
+    enabled: true,
+    skipFrames: 99, // TODO: ?
+    skipTime: 1500, // TODO: ?
+    modelPath: 'yolov8n_web_model/model.json',
   },
   face: {
     enabled: true,

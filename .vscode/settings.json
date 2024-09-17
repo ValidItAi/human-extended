@@ -6,5 +6,12 @@
     "typedoc": true,
   },
   "search.useGlobalIgnoreFiles": true,
-  "search.useParentIgnoreFiles": true
+  "search.useParentIgnoreFiles": true,
+  // disable to reduce noise otherwise, just lint the entire project first
+  "eslint.enable": false,
+  "tslint.enable": false,
+  "editor.formatOnSave": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "prettier.enable": false
 }

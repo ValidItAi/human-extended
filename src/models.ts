@@ -27,9 +27,11 @@ import * as rvm from './segmentation/rvm';
 import * as selfie from './segmentation/selfie';
 import * as ssrnetAge from './gear/ssrnet-age';
 import * as ssrnetGender from './gear/ssrnet-gender';
+import * as forehead from './forehead/forehead';
 import { modelStats, ModelInfo } from './tfjs/load';
 import type { GraphModel } from './tfjs/types';
 import type { Human } from './human';
+
 
 export interface KernelOps { name: string, url: string, missing: string[], ops: string[] }
 
@@ -124,6 +126,9 @@ export class Models {
     if (env.initial) this.reset();
     if (instance) this.instance = instance;
     const m: Record<string, null | GraphModel | Promise<GraphModel>> = {};
+    //forehead main models
+    m.forehead = (this.instance.config.forehead.enabled && !this.models.forehead) ? forehead.load(this.instance.config) : null;
+
     // face main models
     m.blazeface = (this.instance.config.face.enabled && !this.models.blazeface) ? blazeface.load(this.instance.config) : null;
     m.antispoof = (this.instance.config.face.enabled && this.instance.config.face.antispoof?.enabled && !this.models.antispoof) ? antispoof.load(this.instance.config) : null;

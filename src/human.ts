@@ -37,9 +37,10 @@ import * as posenet from './body/posenet';
 import * as rvm from './segmentation/rvm';
 import * as selfie from './segmentation/selfie';
 import * as warmups from './warmup';
+import * as forehead from './forehead/forehead';
 
 // type definitions
-import { Input, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, AnyCanvas, empty } from './exports';
+import { Input, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, AnyCanvas, empty, ForeheadResult } from './exports';
 import type { Tensor, Tensor4D } from './tfjs/types';
 // type exports
 export * from './exports';
@@ -431,6 +432,8 @@ export class Human {
       let bodyRes: BodyResult[] | Promise<BodyResult[]> | never[] = [];
       let handRes: HandResult[] | Promise<HandResult[]> | never[] = [];
       let objectRes: ObjectResult[] | Promise<ObjectResult[]> | never[] = [];
+      let foreheadRes: ForeheadResult | Promise<ForeheadResult> | never[] =
+      [];
 
       // run face detection followed by all models that rely on face bounding box: face mesh, age, gender, emotion
       this.state = 'detect:face';
@@ -496,9 +499,29 @@ export class Human {
       }
       this.analyze('End Object:');
 
+            // TODO: Review
+      // run object detection
+      this.analyze('Start Forehead:');
+      this.state = 'detect:forehead';
+      if (this.config.async) {
+        foreheadRes = this.config.forehead.enabled
+          ? forehead.predict(img.tensor, this.config)
+          : [];
+        if (this.performance.forehead) delete this.performance.forehead;
+      } else {
+        timeStamp = now();
+        foreheadRes = this.config.forehead.enabled
+          ? await forehead.predict(img.tensor, this.config)
+          : [];
+        this.performance.forehead = this.env.perfadd
+          ? (this.performance.forehead || 0) + Math.trunc(now() - timeStamp)
+          : Math.trunc(now() - timeStamp);
+      }
+      this.analyze('End Forehead:');
+
       // if async wait for results
       this.state = 'detect:await';
-      if (this.config.async) [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
+      if (this.config.async) [faceRes, bodyRes, handRes, objectRes, foreheadRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes, foreheadRes]);
 
       // run gesture analysis last
       this.state = 'detect:gesture';
@@ -513,6 +536,7 @@ export class Human {
       this.performance.total = this.env.perfadd ? (this.performance.total || 0) + Math.trunc(now() - timeStart) : Math.trunc(now() - timeStart);
       const shape = this.process.tensor?.shape || [0, 0, 0, 0];
       this.result = {
+        forehead: foreheadRes as ForeheadResult,
         face: faceRes as FaceResult[],
         body: bodyRes as BodyResult[],
         hand: handRes as HandResult[],

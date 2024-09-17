@@ -14,6 +14,7 @@ import { gesture } from './gesture';
 import { defaultLabels } from './labels';
 import type { Result, PersonResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
+import { forehead } from './forehead';
 
 let drawTime = 0;
 
@@ -23,6 +24,7 @@ export { body } from './body';
 export { hand } from './hand';
 export { object } from './object';
 export { gesture } from './gesture';
+export { forehead } from './forehead';
 
 /** draw combined person results instead of individual detection result objects */
 export function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?: Partial<DrawOptions>) {
@@ -70,6 +72,7 @@ export async function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Par
     body(inCanvas, result.body, localOptions),
     hand(inCanvas, result.hand, localOptions),
     object(inCanvas, result.object, localOptions),
+    forehead(inCanvas, result.forehead, localOptions),
     gesture(inCanvas, result.gesture, localOptions), // gestures do not have buffering
     // person(inCanvas, result.persons, localOptions); // already included above
   ]);

@@ -201,12 +201,22 @@ export interface PersonResult {
   boxRaw?: Box,
 }
 
+// TODO: with Sagi
+export interface ForeheadResult {
+  numOfDetections?: number;
+  box?: Box;
+  score?: any;
+  class?: any;
+}
+
 /**
  * Result interface definition for **Human** library
  *
  * Contains all possible detection results
  */
 export interface Result {
+  /** {@link ForeheadResult}: detection & analysis results */
+  forehead: ForeheadResult;
   /** {@link FaceResult}: detection & analysis results */
   face: FaceResult[],
   /** {@link BodyResult}: detection & analysis results */
@@ -233,4 +243,4 @@ export interface Result {
   height: number,
 }
 
-export const empty = (error: string | null = null): Result => ({ face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, width: 0, height: 0, error });
+export const empty = (error: string | null = null): Result => ({ face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, forehead: {}, timestamp: 0, width: 0, height: 0, error });

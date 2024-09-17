@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /**
  * Module that implements helper draw functions, exposed as human.draw
  */
@@ -27,7 +28,11 @@ export { gesture } from './gesture';
 export { forehead } from './forehead';
 
 /** draw combined person results instead of individual detection result objects */
-export function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?: Partial<DrawOptions>) {
+export function person(
+  inCanvas: AnyCanvas,
+  result: PersonResult[],
+  drawOptions?: Partial<DrawOptions>
+) {
   const localOptions: DrawOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas) as CanvasRenderingContext2D;
@@ -39,15 +44,32 @@ export function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?
     if (localOptions.drawBoxes) {
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
-      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      rect(
+        ctx,
+        result[i].box[0],
+        result[i].box[1],
+        result[i].box[2],
+        result[i].box[3],
+        localOptions
+      );
       if (localOptions.drawLabels) {
         const label = `person #${i}`;
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {
           ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(label, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+          ctx.fillText(
+            label,
+            result[i].box[0] + 3,
+            1 + result[i].box[1] + localOptions.lineHeight,
+            result[i].box[2]
+          );
         }
         ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(label, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        ctx.fillText(
+          label,
+          result[i].box[0] + 2,
+          0 + result[i].box[1] + localOptions.lineHeight,
+          result[i].box[2]
+        );
       }
       ctx.stroke();
     }
@@ -55,7 +77,10 @@ export function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?
 }
 
 /** draw processed canvas */
-export function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas) {
+export function canvas(
+  input: AnyCanvas | HTMLImageElement | HTMLVideoElement,
+  output: AnyCanvas
+) {
   if (!input || !output) return;
   const ctx = getCanvasContext(output) as CanvasRenderingContext2D;
   if (!ctx) return;
@@ -63,20 +88,28 @@ export function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, o
 }
 
 /** meta-function that performs draw for: canvas, face, body, hand */
-export async function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>) {
+export async function all(
+  inCanvas: AnyCanvas,
+  result: Result,
+  drawOptions?: Partial<DrawOptions>
+) {
   if (!result?.performance || !inCanvas) return null;
   const timeStamp = now();
   const localOptions = mergeDeep(options, drawOptions);
+  const rest = forehead(inCanvas, result.forehead, localOptions);
+  console.log('rest', rest);
   const promise = Promise.all([
     face(inCanvas, result.face, localOptions),
     body(inCanvas, result.body, localOptions),
     hand(inCanvas, result.hand, localOptions),
     object(inCanvas, result.object, localOptions),
-    forehead(inCanvas, result.forehead, localOptions),
+    rest,
     gesture(inCanvas, result.gesture, localOptions), // gestures do not have buffering
     // person(inCanvas, result.persons, localOptions); // already included above
   ]);
-  drawTime = env.perfadd ? drawTime + Math.round(now() - timeStamp) : Math.round(now() - timeStamp);
+  drawTime = env.perfadd
+    ? drawTime + Math.round(now() - timeStamp)
+    : Math.round(now() - timeStamp);
   result.performance.draw = drawTime;
   return promise;
 }

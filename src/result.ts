@@ -2,6 +2,8 @@
  * Type definitions for Human result object
  */
 
+// TODO: TO BE REMOVED
+
 import type { Tensor } from './tfjs/types';
 import type { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
 import type { AnyCanvas } from './exports';
@@ -202,11 +204,11 @@ export interface PersonResult {
 }
 
 // TODO: with Sagi
-export interface ForeheadResult {
+export interface ForeheadResult { // eslint-disable-line @typescript-eslint/no-explicit-any
   numOfDetections?: number;
-  box?: Box;
-  score?: any;
-  class?: any;
+  box?: Box; /* eslint-disable @typescript-eslint/no-explicit-any */
+  score?: any; /* eslint-disable @typescript-eslint/no-explicit-any */
+  class?: any; /* eslint-disable @typescript-eslint/no-explicit-any */
 }
 
 /**

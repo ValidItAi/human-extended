@@ -279,6 +279,7 @@ async function drawResults(input) {
   if (ui.interpolated) interpolated = human.next(result);
   else interpolated = result;
   human.draw.all(canvas, interpolated, drawOptions);
+  // human.draw.forehead(canvas, interpolated, drawOptions);
 
   // show tree with results
   if (ui.results) {

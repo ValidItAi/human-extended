@@ -32,7 +32,6 @@ import { modelStats, ModelInfo } from './tfjs/load';
 import type { GraphModel } from './tfjs/types';
 import type { Human } from './human';
 
-
 export interface KernelOps { name: string, url: string, missing: string[], ops: string[] }
 
 export function validateModel(instance: Human | null, model: GraphModel | null, name: string): KernelOps | null {
@@ -126,7 +125,7 @@ export class Models {
     if (env.initial) this.reset();
     if (instance) this.instance = instance;
     const m: Record<string, null | GraphModel | Promise<GraphModel>> = {};
-    //forehead main models
+    // forehead main models
     m.forehead = (this.instance.config.forehead.enabled && !this.models.forehead) ? forehead.load(this.instance.config) : null;
 
     // face main models

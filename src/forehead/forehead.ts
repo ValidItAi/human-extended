@@ -1,37 +1,23 @@
+/* eslint-disable comma-dangle */
 /**
  * Forehead model implementation
  */
-
-import * as tf from 'dist/tfjs.esm.js';
+import { ForeheadResult } from '../result';
 import { log, now } from '../util/util';
 import { loadModel } from '../tfjs/load';
-import type { GraphModel, Tensor, Tensor4D, Tensor3D } from '../tfjs/types';
+import type { GraphModel, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
-import { Box, ForeheadResult } from 'src/result';
-import { convertTensorToImageData, cropTensor, scaleAndPositionBoundingBox } from './tensorType';
 // import { detect } from './calc';
 import { detect } from './calcv2';
-import { TRI468 as triangulation } from '../face/facemeshcoords';
-import { mergeDeep } from '../util/util';
-import { getCanvasContext, rad2deg, rect, point, lines, arrow, replace, labels } from '../draw/primitives';
-import { options } from '../draw/options';
-import * as facemeshConstants from '../face/constants';
-import type { AnyCanvas, DrawOptions } from '../exports';
-// import { convertTensorToImageData, cropTensor, scaleAndPositionBoundingBox } from './tensor';
 
 let model: GraphModel | null;
 let last: ForeheadResult;
-let lastCount = 0;
+// let lastCount = 0;
+// eslint-disable-next-line prefer-const
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
-let inputSize = 0;
-const labelsForehead = [
-  "ForeheadRect", 
-  "Forehead"
-]
-
-const numClass = labelsForehead.length;
+// let inputSize = 0;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
@@ -39,13 +25,15 @@ export async function load(config: Config): Promise<GraphModel> {
   else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
-//Usually gets Tensor
-export async function predict(input: Tensor4D, config: Config): Promise<ForeheadResult> {
 
+export async function predict(
+  input: Tensor4D,
+  config: Config
+): Promise<ForeheadResult> {
   if (!model?.['executor']) return last;
-  const skipTime = (config.object.skipTime || 0) > (now() - lastTime);
+  const skipTime = (config.object.skipTime || 0) > now() - lastTime;
   const skipFrame = skipped < (config.object.skipFrames || 0);
-  if (config.skipAllowed && skipTime && skipFrame ) {
+  if (config.skipAllowed && skipTime && skipFrame) {
     skipped++;
     return last;
   }
@@ -77,7 +65,7 @@ export async function predict(input: Tensor4D, config: Config): Promise<Forehead
       videoSource: input,
       model,
       inputShape,
-      faceBox
+      faceBox,
     });
 
     last = obj;
@@ -85,4 +73,3 @@ export async function predict(input: Tensor4D, config: Config): Promise<Forehead
     resolve(obj);
   });
 }
-

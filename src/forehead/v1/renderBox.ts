@@ -1,6 +1,5 @@
 // /* eslint-disable prefer-const */
 
-
 // import { labels, RenderBoxesParams } from './types';
 
 // export const renderBoxes = ({

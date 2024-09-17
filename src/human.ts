@@ -432,6 +432,7 @@ export class Human {
       let bodyRes: BodyResult[] | Promise<BodyResult[]> | never[] = [];
       let handRes: HandResult[] | Promise<HandResult[]> | never[] = [];
       let objectRes: ObjectResult[] | Promise<ObjectResult[]> | never[] = [];
+      // eslint-disable-next-line operator-linebreak
       let foreheadRes: ForeheadResult | Promise<ForeheadResult> | never[] =
       [];
 
@@ -499,7 +500,7 @@ export class Human {
       }
       this.analyze('End Object:');
 
-            // TODO: Review
+      // TODO: Review
       // run object detection
       this.analyze('Start Forehead:');
       this.state = 'detect:forehead';

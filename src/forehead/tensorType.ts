@@ -1,5 +1,7 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as tf from 'dist/tfjs.esm.js';
+
 type BoundingBox = [number, number, number, number];
 
 /**
@@ -13,10 +15,10 @@ export const scaleAndPositionBoundingBox = (
 ): BoundingBox => {
   let [y1, x1, y2, x2] = box;
 
-  x1 = x1 / xRatio;
-  y1 = y1 / yRatio;
-  x2 = x2 / xRatio;
-  y2 = y2 / yRatio;
+  x1 /= xRatio;
+  y1 /= yRatio;
+  x2 /= xRatio;
+  y2 /= yRatio;
 
   if (faceBox) {
     const [faceX1, faceY1] = faceBox;

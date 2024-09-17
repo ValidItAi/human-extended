@@ -54,7 +54,7 @@
 //  * Crop a tensor based on a given bounding box
 //  */
 // export function cropTensor(tensor: Tensor3D, box: BoundingBox): Tensor3D {
-  
+
 //   const [y1, x1, y2, x2] = box;
 //   const [height, width] = tensor.shape.slice(0, 2);
 

@@ -1,18 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable comma-dangle */
+/* eslint-disable camelcase */
+/* eslint-disable no-use-before-define */
 
 import * as tf from 'dist/tfjs.esm.js';
-import { log, now } from '../util/util';
-import { loadModel } from '../tfjs/load';
-import type { GraphModel, Tensor, Tensor4D, Tensor3D } from '../tfjs/types';
-import type { Config } from '../config';
-import { env } from '../util/env';
 import { Box, ForeheadResult } from 'src/result';
+import type { GraphModel, Tensor, Tensor4D, Tensor3D } from '../tfjs/types';
 
-import { convertTensorToImageData, cropTensor, scaleAndPositionBoundingBox } from './tensorType';
-import { div } from 'types/tfjs-core';
-const labels = [
-  "ForeheadRect", 
-  "Forehead"
-]
+import { cropTensor, scaleAndPositionBoundingBox } from './tensorType';
+
+const labels = ['ForeheadRect', 'Forehead'];
 
 const numClass = labels.length;
 
@@ -24,7 +22,6 @@ interface PreprocessResult {
   xRatio: number;
   yRatio: number;
 }
-
 
 interface DetectOptions {
   videoSource: Tensor4D;
@@ -39,14 +36,14 @@ export const detect = async ({
   inputShape,
   faceBox = null,
 }: DetectOptions): Promise<ForeheadResult> => {
-  let result: ForeheadResult = { numOfDetections: 0 }
+  const result: ForeheadResult = { numOfDetections: 0 };
 
   try {
     const [modelWidth, modelHeight] = inputShape.slice(1, 3);
 
-    //tf.engine().startScope();
-
-    const { frame, input, xRatio, yRatio } = await preprocess(
+    // tf.engine().startScope();
+    // const { frame, input, xRatio, yRatio } = await preprocess(
+    const { input, xRatio, yRatio } = await preprocess(
       videoSource,
       modelWidth,
       modelHeight,
@@ -57,7 +54,7 @@ export const detect = async ({
     const res = model.execute(input) as Tensor;
     console.log('model result', res);
 
-    const transRes = tf.transpose(res, [0,2,1])
+    const transRes = tf.transpose(res, [0, 2, 1]);
 
     const numDetections = transRes.shape[2];
     if (numDetections === 0) {
@@ -69,26 +66,26 @@ export const detect = async ({
 
     const [scores, classes] = tf.tidy(() => {
       const sliced = tf.slice(transRes, [0, 0, 4], [-1, -1, numClass]);
-      const rawScores = tf.squeeze(sliced,[0]);
-      
+      const rawScores = tf.squeeze(sliced, [0]);
+
       return [tf.max(rawScores, 1), tf.argMax(rawScores, 1)];
     });
 
     const boxes = tf.tidy(() => {
-      const wSlice = tf.slice(transRes,[0, 0, 2], [-1, -1, 1])
-      const hSlice = tf.slice(transRes,[0, 0, 3], [-1, -1, 1])
+      const wSlice = tf.slice(transRes, [0, 0, 2], [-1, -1, 1]);
+      const hSlice = tf.slice(transRes, [0, 0, 3], [-1, -1, 1]);
 
       const x1 = tf.sub(
-        tf.slice(transRes,[0, 0, 0], [-1, -1, 1]),
+        tf.slice(transRes, [0, 0, 0], [-1, -1, 1]),
         tf.div(wSlice, 2)
       );
       const y1 = tf.sub(
-        tf.slice(transRes,[0, 0, 1], [-1, -1, 1]),
+        tf.slice(transRes, [0, 0, 1], [-1, -1, 1]),
         tf.div(hSlice, 2)
       );
       const x2 = tf.add(x1, wSlice);
       const y2 = tf.add(y1, hSlice);
-      const contacted = tf.concat([y1, x1, y2, x2], 2) as Tensor
+      const contacted = tf.concat([y1, x1, y2, x2], 2);
       return tf.squeeze(contacted);
     });
 
@@ -152,7 +149,6 @@ export const detect = async ({
     result['score'] = filtered_scores_data;
     result['class'] = filtered_classes_data;
 
-    
     return result;
     // callback(videoSource);
 
@@ -169,8 +165,8 @@ const preprocess = async (
   modelHeight: number,
   faceBox: BoundingBox | null
 ): Promise<PreprocessResult> => {
-  let xRatio: number = 0,
-    yRatio: number = 0;
+  let xRatio: number = 0;
+  let yRatio: number = 0;
 
   // Remove the batch dimension if present
   let imageTensor = tf.squeeze(tensor) as tf.Tensor3D;
@@ -179,17 +175,25 @@ const preprocess = async (
   const [height, width, channels] = imageTensor.shape;
   if (channels === 1) {
     // Grayscale to RGBA
-    imageTensor = tf.stack([imageTensor, imageTensor, imageTensor, tf.onesLike(imageTensor).mul(255)], -1) as Tensor3D;
+    imageTensor = tf.stack(
+      [
+        imageTensor,
+        imageTensor,
+        imageTensor,
+        tf.onesLike(imageTensor).mul(255),
+      ],
+      -1
+    ) as Tensor3D;
   } else if (channels === 3) {
     // RGB to RGBA
     const alphaChannel = tf.ones([height, width, 1]);
-    const alphaChannel2 = tf.mul(alphaChannel, 255)
+    const alphaChannel2 = tf.mul(alphaChannel, 255);
     imageTensor = tf.concat([imageTensor, alphaChannel2], -1) as Tensor3D;
   }
 
   // Convert tensor data to Uint8ClampedArray
   const flattenedArray = new Uint8ClampedArray(
-    imageTensor.dataSync().map(value => Math.round(value)) // Ensure values are in [0, 255]
+    imageTensor.dataSync().map((value) => Math.round(value)) // Ensure values are in [0, 255]
   );
 
   // Create ImageData
@@ -199,7 +203,7 @@ const preprocess = async (
   // Create ImageBitmap from the frame
   const [frame, input] = tf.tidy(() => {
     const img = tf.browser.fromPixels(imageBitmap);
-    console.log('Initial tensor shape:', img.shape);
+    console.log('Initial tensor shape:', img.shape, frame);
 
     let croppedImg: tf.Tensor3D;
     if (faceBox) {
@@ -218,7 +222,8 @@ const preprocess = async (
     const [h, w] = croppedImg.shape.slice(0, 2);
     const aspectRatio = w / h;
 
-    let newWidth: number, newHeight: number;
+    let newWidth: number;
+    let newHeight: number;
     if (w > h) {
       newWidth = modelWidth;
       newHeight = modelWidth / aspectRatio;
@@ -243,7 +248,7 @@ const preprocess = async (
       [0, 0],
     ]);
     const dived = tf.div(imgPadded, 255.0);
-    const expand = tf.expandDims(dived, 0) as Tensor4D
+    const expand = tf.expandDims(dived, 0) as Tensor4D;
     // const imgPadded = imgResized.pad([
     //   [Math.floor(padHeight / 2), Math.ceil(padHeight / 2)],
     //   [Math.floor(padWidth / 2), Math.ceil(padWidth / 2)],

@@ -15,4 +15,5 @@ export const defaultLabels = {
   hand: '[label] [score]%',
   finger: '[label]',
   gesture: '[where] [who]: [what]',
+  forehead: 'label',
 };

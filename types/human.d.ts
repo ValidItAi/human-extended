@@ -6,6 +6,7 @@ import { Tensor2D } from '@tensorflow/tfjs-core';
 import { Tensor3D } from '@tensorflow/tfjs-core';
 import { Tensor4D } from '@tensorflow/tfjs-core';
 import { TensorLike } from '@tensorflow/tfjs-core';
+import { forehead } from '../src/draw/forehead';
 
 /** meta-function that performs draw for: canvas, face, body, hand */
 declare function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>): Promise<[void, void, void, void, void] | null>;
@@ -204,7 +205,8 @@ declare namespace draw {
         body,
         hand,
         object,
-        gesture
+        gesture,
+        forehead
     }
 }
 export { draw }

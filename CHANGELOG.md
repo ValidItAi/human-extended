@@ -11,6 +11,7 @@
   
 ### **HEAD -> initialBuild** 2024/09/17 anaelshomrai@gmail.com
 
+- path changes
 - build
 - after build
 - manually add types

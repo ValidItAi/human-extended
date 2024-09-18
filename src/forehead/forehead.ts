@@ -10,6 +10,7 @@ import type { Config } from '../config';
 import { env } from '../util/env';
 // import { detect } from './calc';
 import { detect } from './calcv2';
+import { createBoundingBoxFromCenter } from './tensorType';
 
 let model: GraphModel | null;
 let last: ForeheadResult;
@@ -59,8 +60,8 @@ export async function predict(
     //   faceBox,
     // });shape
     const inputShape = model?.inputs[0].shape || [1, 640, 640, 3];
-    // const inputShape = [1, 640, 640, 3];
-    const faceBox = null;
+    const faceBox = createBoundingBoxFromCenter(inputShape[1] / 2, inputShape[2] / 2, 640);
+
     const obj = await detect({
       videoSource: input,
       model,

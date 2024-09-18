@@ -46253,6 +46253,14 @@ var scaleAndPositionBoundingBox = (box, xRatio, yRatio, faceBox) => {
   }
   return [Math.round(y12), Math.round(x12), Math.round(y22), Math.round(x22)];
 };
+var createBoundingBoxFromCenter = (centerX, centerY, dimension) => {
+  const halfDim = dimension / 2;
+  const x12 = centerX - halfDim;
+  const y12 = centerY - halfDim;
+  const x22 = centerX + halfDim;
+  const y22 = centerY + halfDim;
+  return [Math.round(x12), Math.round(y12), Math.round(x22), Math.round(y22)];
+};
 function cropTensor(tensor, box) {
   const [y12, x12, y22, x22] = box;
   const [height, width] = tensor.shape.slice(0, 2);
@@ -46464,7 +46472,7 @@ async function predict22(input, config3) {
   skipped16 = 0;
   return new Promise(async (resolve) => {
     const inputShape = (model23 == null ? void 0 : model23.inputs[0].shape) || [1, 640, 640, 3];
-    const faceBox = null;
+    const faceBox = createBoundingBoxFromCenter(inputShape[1] / 2, inputShape[2] / 2, 640);
     const obj = await detect({
       videoSource: input,
       model: model23,

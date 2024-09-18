@@ -247,6 +247,7 @@ const preprocess = async (
       [Math.floor(padWidth / 2), Math.ceil(padWidth / 2)],
       [0, 0],
     ]);
+
     const dived = tf.div(imgPadded, 255.0);
     const expand = tf.expandDims(dived, 0) as Tensor4D;
     // const imgPadded = imgResized.pad([
